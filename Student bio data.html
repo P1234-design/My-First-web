@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student Bio Data — Job Application</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['"Playfair Display"','serif'],body:['Lora','serif']}}}}</script>
+<style>
+:root{--ink:#3b2a20;--gold:#b8860b;--wine:#7b2d3b;--paper:#f4ead5}
+.dark{--ink:#efe3cc;--gold:#d9b44a;--wine:#e08a99;--paper:#1a1412}
+body{font-family:Lora,serif;color:var(--ink);background:var(--paper);min-height:100vh;transition:background .4s,color .4s}
+.bg{position:fixed;inset:0;z-index:-1;background:
+ radial-gradient(circle at 15% 20%,rgba(184,134,11,.35),transparent 40%),
+ radial-gradient(circle at 85% 15%,rgba(123,45,59,.3),transparent 38%),
+ radial-gradient(circle at 70% 90%,rgba(79,111,82,.3),transparent 40%)}
+.dark .bg{background:
+ radial-gradient(circle at 15% 20%,rgba(217,180,74,.18),transparent 40%),
+ radial-gradient(circle at 85% 15%,rgba(224,138,153,.15),transparent 38%),
+ radial-gradient(circle at 70% 90%,rgba(100,150,110,.15),transparent 40%)}
+.glass{background:rgba(255,250,238,.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(139,94,60,.28);border-radius:1.25rem;box-shadow:0 8px 30px rgba(90,60,30,.15);transition:transform .3s,background .4s}
+.dark .glass{background:rgba(35,26,22,.55);border-color:rgba(217,180,74,.25);box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.glass:hover{transform:translateY(-2px)}
+.inp{width:100%;padding:.5rem .75rem;border-radius:.6rem;background:rgba(255,255,255,.55);border:1px solid rgba(139,94,60,.3);outline:none;color:var(--ink);transition:box-shadow .2s}
+.dark .inp{background:rgba(0,0,0,.3);border-color:rgba(217,180,74,.3)}
+.inp:focus{box-shadow:0 0 0 3px rgba(184,134,11,.35)}
+.lbl{display:block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;opacity:.75;margin-bottom:.2rem}
+h2{font-family:'Playfair Display',serif}
+.rule{height:1px;background:linear-gradient(90deg,var(--gold),transparent);margin:.4rem 0 1rem}
+.btn{padding:.55rem 1.1rem;border-radius:999px;border:1px solid var(--gold);font-weight:600;transition:all .25s;cursor:pointer}
+.btn:hover{background:var(--gold);color:#fff;transform:translateY(-1px)}
+.btn-fill{background:var(--wine);color:#fff;border-color:var(--wine)}
+.dark .btn-fill{color:#1a1412}
+input[type=range]{accent-color:var(--gold)}
+.fade{animation:f .7s both}@keyframes f{from{opacity:0;transform:translateY(14px)}}
+@media print{.noprint{display:none!important}.glass{backdrop-filter:none;background:#fff;color:#000;box-shadow:none}.bg{display:none}body{background:#fff}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+
+<header class="noprint sticky top-0 z-20 glass !rounded-none !border-x-0 !border-t-0 px-4 py-3 flex items-center justify-between">
+  <span class="font-display text-xl font-bold" style="color:var(--wine)">❦ Bio·Data</span>
+  <nav class="hidden md:flex gap-5 text-sm">
+    <a href="#personal">Personal</a><a href="#academic">Academics</a><a href="#credits">Credits</a><a href="#skills">Skills</a><a href="#bank">Bank</a>
+  </nav>
+  <button id="theme" class="btn text-sm" aria-label="Toggle theme">🌙 Dark</button>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+
+  <!-- HERO -->
+  <section class="glass p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 fade">
+    <label class="relative cursor-pointer group shrink-0">
+      <img id="photo" alt="Profile" class="w-36 h-36 rounded-full object-cover border-4" style="border-color:var(--gold)" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23c9b08a'/%3E%3Ccircle cx='50' cy='38' r='18' fill='%23f4ead5'/%3E%3Cpath d='M15 95c4-25 66-25 70 0z' fill='%23f4ead5'/%3E%3C/svg%3E">
+      <span class="absolute inset-0 rounded-full bg-black/50 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition noprint">Upload photo</span>
+      <input type="file" id="file" accept="image/*" class="hidden">
+    </label>
+    <div class="flex-1 text-center md:text-left">
+      <p class="text-xs tracking-[.3em] uppercase opacity-70">Curriculum Vitae · Bio Data</p>
+      <h1 id="pName" class="font-display text-4xl md:text-5xl font-bold" style="color:var(--wine)">—</h1>
+      <p id="pCourse" class="mt-1 text-lg italic"></p>
+      <p id="pContact" class="mt-2 text-sm opacity-80"></p>
+      <div class="mt-4">
+        <div class="flex justify-between text-xs mb-1"><span>Profile completeness</span><span id="compTxt">0%</span></div>
+        <div class="h-2 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden"><div id="compBar" class="h-full rounded-full transition-all duration-700" style="background:linear-gradient(90deg,var(--wine),var(--gold));width:0"></div></div>
+      </div>
+    </div>
+    <div class="grid grid-cols-3 md:grid-cols-1 gap-3 text-center">
+      <div class="glass px-4 py-2"><div id="kCgpa" class="font-display text-2xl">0</div><div class="text-xs opacity-70">Avg SGPA</div></div>
+      <div class="glass px-4 py-2"><div id="kCred" class="font-display text-2xl">0</div><div class="text-xs opacity-70">Credits</div></div>
+      <div class="glass px-4 py-2"><div id="kAch" class="font-display text-2xl">0</div><div class="text-xs opacity-70">Awards</div></div>
+    </div>
+  </section>
+
+  <form id="form" onsubmit="return false" class="space-y-8">
+
+  <!-- PERSONAL -->
+  <section id="personal" class="glass p-6 fade">
+    <h2 class="text-2xl">I. Personal Details</h2><div class="rule"></div>
+    <div id="gPersonal" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  </section>
+
+  <!-- ACADEMIC -->
+  <section id="academic" class="glass p-6 fade">
+    <h2 class="text-2xl">II. Academic Record</h2><div class="rule"></div>
+    <div class="grid lg:grid-cols-2 gap-6">
+      <div>
+        <div id="gAcad" class="space-y-3"></div>
+        <h3 class="font-display mt-6 mb-2 text-lg">Semester SGPA (out of 10)</h3>
+        <div id="gSem" class="grid grid-cols-3 sm:grid-cols-6 gap-2"></div>
+      </div>
+      <div class="space-y-4">
+        <div class="glass p-3"><p class="lbl">Board &amp; degree percentage</p><div class="h-48"><canvas id="cBoard"></canvas></div></div>
+        <div class="glass p-3"><p class="lbl">Semester progress</p><div class="h-48"><canvas id="cSem"></canvas></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CREDITS -->
+  <section id="credits" class="glass p-6 fade">
+    <h2 class="text-2xl">III. Course &amp; Essential Credits</h2><div class="rule"></div>
+    <div id="gCourse" class="grid sm:grid-cols-3 gap-4 mb-5"></div>
+    <div class="grid lg:grid-cols-2 gap-6">
+      <div>
+        <div class="grid grid-cols-[1fr_5rem_5rem] gap-2 text-xs uppercase opacity-70 mb-1"><span>Category</span><span>Earned</span><span>Required</span></div>
+        <div id="gCred" class="space-y-2"></div>
+        <p class="mt-3 text-sm">Total: <b id="cTot">0 / 0</b> credits</p>
+      </div>
+      <div class="glass p-3"><div class="h-60"><canvas id="cCred"></canvas></div></div>
+    </div>
+  </section>
+
+  <!-- SKILLS + ACHIEVEMENTS -->
+  <section id="skills" class="grid lg:grid-cols-2 gap-8 fade">
+    <div class="glass p-6">
+      <h2 class="text-2xl">IV. Skills</h2><div class="rule"></div>
+      <div id="gSkill" class="space-y-4"></div>
+    </div>
+    <div class="glass p-6">
+      <h2 class="text-2xl">V. Achievements</h2><div class="rule"></div>
+      <label><span class="lbl">One achievement per line</span><textarea id="ach" rows="4" class="inp"></textarea></label>
+      <ul id="achList" class="mt-4 space-y-2 text-sm"></ul>
+    </div>
+  </section>
+
+  <!-- BANK -->
+  <section id="bank" class="glass p-6 fade">
+    <h2 class="text-2xl">VI. Bank Details <span class="text-sm font-body opacity-60">(for salary / stipend)</span></h2><div class="rule"></div>
+    <div id="gBank" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    <button type="button" id="eye" class="noprint mt-3 text-sm underline">👁 Show account number</button>
+  </section>
+
+  <!-- DECLARATION -->
+  <section class="glass p-6 fade">
+    <h2 class="text-2xl">VII. Declaration</h2><div class="rule"></div>
+    <p class="text-sm italic mb-4">I hereby declare that the information furnished above is true and correct to the best of my knowledge and belief.</p>
+    <div class="grid sm:grid-cols-2 gap-4" id="gDecl"></div>
+  </section>
+
+  <div class="noprint flex flex-wrap gap-3 justify-center pb-8">
+    <button type="button" id="bSample" class="btn">✦ Load Sample</button>
+    <button type="button" id="bClear" class="btn">✕ Clear Form</button>
+    <button type="button" id="bPrint" class="btn btn-fill">🖨 Print / Save PDF</button>
+  </div>
+  </form>
+</main>
+
+<div id="toast" class="noprint fixed bottom-6 left-1/2 -translate-x-1/2 glass px-5 py-2 text-sm opacity-0 pointer-events-none transition-opacity"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const fld=(id,l,t='text',c='')=>{
+  let el;
+  if(Array.isArray(t)) el=`<select id="${id}" class="inp">${t.map(o=>`<option>${o}</option>`).join('')}</select>`;
+  else if(t==='ta') el=`<textarea id="${id}" rows="3" class="inp"></textarea>`;
+  else el=`<input id="${id}" type="${t}" class="inp" ${t==='number'?'min="0" step="any"':''}>`;
+  return `<label class="block ${c}"><span class="lbl">${l}</span>${el}</label>`;
+};
+$('gPersonal').innerHTML=[fld('name','Full name'),fld('father',"Father's / Guardian's name"),fld('dob','Date of birth','date'),
+ fld('gender','Gender',['','Male','Female','Other']),fld('nat','Nationality'),fld('lang','Languages known'),
+ fld('phone','Phone','tel'),fld('email','Email','email'),fld('linkedin','LinkedIn / Portfolio'),
+ fld('addr','Permanent address','text','sm:col-span-2 lg:col-span-3'),
+ fld('obj','Career objective','ta','sm:col-span-2 lg:col-span-3')].join('');
+const acRows=[['10','Class X'],['12','Class XII'],['g','Graduation']];
+$('gAcad').innerHTML=acRows.map(([k,n])=>`<div class="grid grid-cols-[5rem_1fr_4.5rem_4.5rem] gap-2 items-end">
+ <span class="font-display pb-2">${n}</span>${fld('b'+k,'Board / University')}${fld('y'+k,'Year')}${fld('m'+k,'%','number')}</div>`).join('');
+$('gSem').innerHTML=[1,2,3,4,5,6].map(i=>fld('s'+i,'Sem '+i,'number')).join('');
+$('gCourse').innerHTML=fld('course','Course / Degree')+fld('univ','Institution')+fld('enrol','Enrolment no.');
+const cats=['Core Courses','Electives','Laboratory','Project / Internship','Humanities & Ethics'];
+$('gCred').innerHTML=cats.map((c,i)=>`<div class="grid grid-cols-[1fr_5rem_5rem] gap-2 items-center"><span class="text-sm">${c}</span>
+ <input id="ce${i}" type="number" min="0" class="inp"><input id="cr${i}" type="number" min="0" class="inp"></div>`).join('');
+$('gSkill').innerHTML=[0,1,2,3,4].map(i=>`<div><div class="flex gap-2 items-center"><input id="sk${i}" class="inp" placeholder="Skill"><input id="sl${i}" type="range" min="0" max="100" class="w-32"><span id="sv${i}" class="text-xs w-8 text-right"></span></div>
+ <div class="h-1.5 mt-2 rounded-full bg-black/10 dark:bg-white/10"><div id="sb${i}" class="h-full rounded-full transition-all duration-500" style="background:linear-gradient(90deg,var(--wine),var(--gold))"></div></div></div>`).join('');
+$('gBank').innerHTML=fld('hold','Account holder')+fld('bank','Bank name')+fld('branch','Branch')+fld('acc','Account number','password')+fld('ifsc','IFSC code')+fld('acct','Account type',['','Savings','Current']);
+$('gDecl').innerHTML=fld('place','Place')+fld('date','Date','date');
+
+const sample={name:'Aarav Sharma',father:'Rajesh Sharma',dob:'2003-05-14',gender:'Male',nat:'Indian',lang:'Hindi, English, Sanskrit',phone:'+91 98765 43210',email:'aarav.sharma@email.com',linkedin:'linkedin.com/in/aaravsharma',addr:'12 Civil Lines, Prayagraj, Uttar Pradesh – 211001',obj:'Motivated Computer Science student seeking an entry-level software role to apply strong problem-solving and web development skills.',
+b10:'CBSE',y10:2019,m10:88,b12:'CBSE',y12:2021,m12:91,bg:'AKTU',yg:2025,mg:84,s1:8.2,s2:8.5,s3:8.1,s4:8.8,s5:9.0,s6:9.2,
+course:'B.Tech – Computer Science & Engineering',univ:'MNNIT Allahabad, Prayagraj',enrol:'2021CS1042',
+ce0:62,cr0:70,ce1:12,cr1:15,ce2:10,cr2:10,ce3:14,cr3:20,ce4:6,cr4:8,
+sk0:'HTML / CSS / Tailwind',sl0:92,sk1:'JavaScript',sl1:85,sk2:'Python',sl2:78,sk3:'SQL & Databases',sl3:70,sk4:'Communication',sl4:88,
+ach:'Winner – Inter-College Hackathon 2024\nSchool Topper, Class XII (2021)\nPublished paper at IEEE student conference\nNCC "B" Certificate holder',
+hold:'Aarav Sharma',bank:'State Bank of India',branch:'Civil Lines, Prayagraj',acc:'31245678901',ifsc:'SBIN0000123',acct:'Savings',place:'Prayagraj',date:'2026-10-28'};
+
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const P={wine:'#7b2d3b',gold:'#b8860b',sage:'#4f6f52',sepia:'#8b5e3c'};
+Chart.defaults.font.family='Lora';Chart.defaults.maintainAspectRatio=false;
+const mk=(id,cfg)=>new Chart($(id),cfg);
+const cBoard=mk('cBoard',{type:'bar',data:{labels:['Class X','Class XII','Graduation'],datasets:[{data:[],backgroundColor:[P.sepia,P.gold,P.wine],borderRadius:8}]},options:{plugins:{legend:{display:false}},scales:{y:{min:0,max:100}}}});
+const cSem=mk('cSem',{type:'line',data:{labels:[1,2,3,4,5,6].map(i=>'Sem '+i),datasets:[{data:[],borderColor:P.wine,backgroundColor:'rgba(184,134,11,.25)',fill:true,tension:.35,pointRadius:5,pointBackgroundColor:P.gold}]},options:{plugins:{legend:{display:false}},scales:{y:{min:0,max:10}}}});
+const cCred=mk('cCred',{type:'bar',data:{labels:cats,datasets:[{label:'Earned',data:[],backgroundColor:P.sage,borderRadius:6},{label:'Required',data:[],backgroundColor:'rgba(184,134,11,.55)',borderRadius:6}]},options:{indexAxis:'y',plugins:{legend:{position:'bottom'}}}});
+
+const num=id=>parseFloat($(id).value)||0;
+function theme(){const d=document.documentElement.classList.contains('dark');
+  Chart.defaults.color=d?'#efe3cc':'#3b2a20';Chart.defaults.borderColor=d?'rgba(255,255,255,.12)':'rgba(0,0,0,.1)';
+  [cBoard,cSem,cCred].forEach(c=>c.update());$('theme').textContent=d?'☀️ Light':'🌙 Dark';}
+function update(){
+  $('pName').textContent=$('name').value||'Your Name';
+  $('pCourse').textContent=$('course').value;
+  $('pContact').textContent=[$('phone').value,$('email').value,$('addr').value.split(',').slice(-2).join(',')].filter(Boolean).join('  ·  ');
+  cBoard.data.datasets[0].data=['m10','m12','mg'].map(num);cBoard.update();
+  const sg=[1,2,3,4,5,6].map(i=>$('s'+i).value===''?null:num('s'+i));cSem.data.datasets[0].data=sg;cSem.update();
+  const f=sg.filter(v=>v!==null);$('kCgpa').textContent=f.length?(f.reduce((a,b)=>a+b,0)/f.length).toFixed(2):'0';
+  const e=cats.map((_,i)=>num('ce'+i)),r=cats.map((_,i)=>num('cr'+i));
+  cCred.data.datasets[0].data=e;cCred.data.datasets[1].data=r;cCred.update();
+  const te=e.reduce((a,b)=>a+b,0),tr=r.reduce((a,b)=>a+b,0);
+  $('cTot').textContent=te+' / '+tr+(tr?' ('+Math.round(te/tr*100)+'%)':'');$('kCred').textContent=te;
+  [0,1,2,3,4].forEach(i=>{const v=num('sl'+i);$('sb'+i).style.width=v+'%';$('sv'+i).textContent=$('sk'+i).value?v+'%':''});
+  const items=$('ach').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  $('achList').innerHTML=items.map(t=>`<li class="flex gap-2 glass !rounded-lg px-3 py-2"><span style="color:var(--gold)">◆</span><span></span></li>`).join('');
+  [...$('achList').children].forEach((li,i)=>li.lastChild.textContent=items[i]);$('kAch').textContent=items.length;
+  const ins=[...document.querySelectorAll('#form .inp')].filter(x=>x.type!=='range');
+  const pct=Math.round(ins.filter(x=>x.value.trim()!=='').length/ins.length*100);
+  $('compBar').style.width=pct+'%';$('compTxt').textContent=pct+'%';
+}
+function toast(m){const t=$('toast');t.textContent=m;t.style.opacity=1;setTimeout(()=>t.style.opacity=0,1800)}
+document.addEventListener('input',update);
+$('theme').onclick=()=>{const c=document.documentElement.classList;c.toggle('dark');try{localStorage.setItem('theme',c.contains('dark')?'d':'l')}catch(e){}theme()};
+$('bSample').onclick=()=>{Object.entries(sample).forEach(([k,v])=>$(k).value=v);update();toast('Sample data loaded')};
+$('bClear').onclick=()=>{document.querySelectorAll('#form input,#form textarea,#form select').forEach(x=>x.value=x.type==='range'?0:'');
+  $('photo').src=$('photo').dataset.def;update();toast('Form cleared')};
+$('bPrint').onclick=()=>print();
+$('eye').onclick=()=>{const a=$('acc'),s=a.type==='password';a.type=s?'text':'password';$('eye').textContent=s?'🙈 Hide account number':'👁 Show account number'};
+$('photo').dataset.def=$('photo').src;
+$('file').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>$('photo').src=r.result;r.readAsDataURL(f)};
+try{if(localStorage.getItem('theme')==='d'||(!localStorage.getItem('theme')&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.classList.add('dark')}catch(e){}
+Object.entries(sample).forEach(([k,v])=>$(k).value=v);
+theme();update();
+</script>
+</body>
+</html>
