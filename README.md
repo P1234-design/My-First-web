@@ -6,8 +6,8 @@ A collection of three interactive, responsive web applications built with HTML, 
 
 | Project | File | Description |
 |---|---|---|
-| **Student Bio Data** | [`Studentbiodata.html`](./Studentbiodata.html) | A job-application-style student profile with academic records, charts, skills, achievements, and a printable biodata layout. |
-| **Bazaarly** | [`Brazzarly.html`](./Brazzarly.html) | A demo e-commerce marketplace with product browsing, search, filters, cart, wishlist, coupons, orders, and seller listing screens. |
+| **Student Bio Data** | [`Studentbiodata.html`](./Student bio data.html) | A job-application-style student profile with academic records, charts, skills, achievements, and a printable biodata layout. |
+| **Bazaarly** | [`Brazzarly.html`](./Brazzerly.html) | A demo e-commerce marketplace with product browsing, search, filters, cart, wishlist, coupons, orders, and seller listing screens. |
 | **Aurora Music Player** | [`Aurora.html`](./Aurora.html) | A browser music player with local audio imports, playlists, sound controls, visual effects, and ambient soundscapes. |
 
 > The filenames in this README match the uploaded project files. If you rename any HTML file, update the corresponding links here as well.
